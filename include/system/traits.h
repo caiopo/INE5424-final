@@ -38,6 +38,7 @@ struct Traits
     static const bool debugged = true;
     static const bool emulated = true;
     static const bool hysterically_debugged = false;
+    static const bool multicore = false;
 
     typedef LIST<> DEVICES;
     typedef TLIST<> ASPECTS;
