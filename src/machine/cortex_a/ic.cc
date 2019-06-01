@@ -18,6 +18,24 @@ __BEGIN_SYS
 // Class attributes
 IC::Interrupt_Handler IC::_int_vector[IC::INTS];
 
+void IC::dispatch(unsigned int id)
+{
+    if((id != INT_TIMER) || Traits<IC>::hysterically_debugged)
+        db<IC>(TRC) << "IC::dispatch(i=" << id << ")" << endl;
+
+    _int_vector[id](id);
+}
+
+void IC::eoi(unsigned int id)
+{
+    if((id != INT_TIMER) || Traits<IC>::hysterically_debugged)
+        db<IC>(TRC) << "IC::eoi(i=" << id << ")" << endl;
+
+    assert(id < INTS);
+    if(_eoi_vector[id])
+        _eoi_vector[id](id);
+}
+
 
 // Class methods
 void IC::entry()
