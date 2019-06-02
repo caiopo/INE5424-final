@@ -29,122 +29,107 @@ public:
     enum {
         // http://infocenter.arm.com/help/topic/com.arm.doc.dui0411d/DUI0411D_realview_platform_baseboard_ug.pdf
         // https://wiki.osdev.org/User:Pancakes/arm_qemu_realview-pb-a
+        // http://infocenter.arm.com/help/topic/com.arm.doc.dui0440b/DUI0440B_realview_platform_baseboard_for_cortexa9_ug.pdf
+        // http://infocenter.arm.com/help/topic/com.arm.doc.ddi0407g/DDI0407G_cortex_a9_mpcore_r3p0_trm.pdf
         
-        SCR_BASE = 0x10000000,
-        SYSTEM_CONTROLLER_BASE = 0x10001000,
+        SCR_BASE                = 0x10000000,
+        SYSTEM_CONTROLLER_BASE  = 0x10001000,
 
-        UART0_BASE = 0x10009000,
-        UART1_BASE = 0x1000a000,
-        UART2_BASE = 0x1000b000,
-        UART3_BASE = 0x1000c000,
+        UART0_BASE              = 0x10009000,
+        UART1_BASE              = 0x1000a000,
+        UART2_BASE              = 0x1000b000,
+        UART3_BASE              = 0x1000c000,
 
-        WDT0_BASE = 0x10010000,
+        WDT0_BASE               = 0x10010000,
 
-        GPIOA_BASE = 0x10013000,
-        GPIOB_BASE = 0x10014000,
-        GPIOC_BASE = 0x10015000,
+        GPIOA_BASE              = 0x10013000,
+        GPIOB_BASE              = 0x10014000,
+        GPIOC_BASE              = 0x10015000,
 
-        IC0_BASE = 0x1e000000,
-        IC1_BASE = 0x1e001000,
-        IC2_BASE = 0x1e002000,
-        IC3_BASE = 0x1e003000,
+        IC0_BASE                = 0x1e000000,
+        IC1_BASE                = 0x1e001000,
+        IC2_BASE                = 0x1e002000,
+        IC3_BASE                = 0x1e003000,
 
-        // ??
-        TIMER0_BASE = 0x10011000,
-        TIMER1_BASE = 0x10011020,
-        TIMER2_BASE = 0x10012000,
-        TIMER3_BASE = 0x10012020,
+        TIMER0_BASE             = 0x10011000,
+        TIMER1_BASE             = 0x10011020,
+        TIMER2_BASE             = 0x10012000,
+        TIMER3_BASE             = 0x10012020,
 
-        GIC_BASE    = 0x1f000000,
+        GIC2_BASE               = 0x1e020000,
+        GIC3_BASE               = 0x1e030000,
+        PERIPHERAL_BASE         = 0x1f000000,
+    };
 
-        /* 0x10000000 System registers.  */
-        /* 0x10001000 System controller.  */
-        /* 0x10002000 Two-Wire Serial Bus.  */
-        /* 0x10003000 Reserved.  */
-        /* 0x10004000 AACI.  */
-        /* 0x10005000 MCI.  */
-        /* 0x10006000 KMI0.  */
-        /* 0x10007000 KMI1.  */
-        /* 0x10009000 UART0.  */
-        /* 0x1000a000 UART1.  */
-        /* 0x1000b000 UART2.  */
-        /* 0x1000c000 UART3.  */
-        /* 0x1000d000 SSPI.  */
-        /* 0x1000e000 SCI.  */
-        /* 0x1000f000 Reserved.  */
-        /* 0x10010000 Watchdog.  */
-        /* 0x10011000 Timer 0+1.  */
-        /* 0x10012000 Timer 2+3.  */
-        /* 0x10013000 GPIO 0.  */
-        /* 0x10014000 GPIO 1.  */
-        /* 0x10015000 GPIO 2.  */
-        /* 0x10002000 Two-Wire Serial Bus - DVI. (PB) */
-        /* 0x10017000 RTC.  */
-        /* 0x10018000 DMC.  */
-        /* 0x10019000 PCI controller config.  */
-        /* 0x10020000 CLCD.  */
-        /* 0x10030000 DMA Controller.  */
-        /* 0x10080000 SMC.  */
-        /* 0x1e000000 GIC1. (PB) */
-        /* 0x1e001000 GIC2. (PB) */
-        /* 0x1e002000 GIC3. (PB) */
-        /* 0x1e003000 GIC4. (PB) */
-        /* 0x40000000 NOR flash.  */
-        /* 0x44000000 DoC flash.  */
-        /* 0x48000000 SRAM.  */
-        /* 0x4c000000 Configuration flash.  */
-        /* 0x4e000000 Ethernet.  */
-        /* 0x4f000000 USB.  */
-        /* 0x50000000 PISMO.  */
-        /* 0x54000000 PISMO.  */
-        /* 0x58000000 PISMO.  */
-        /* 0x5c000000 PISMO.  */
-        /* 0x60000000 PCI.  */
-        /* 0x60000000 PCI Self Config.  */
-        /* 0x61000000 PCI Config.  */
-        /* 0x62000000 PCI IO.  */
-        /* 0x63000000 PCI mem 0.  */
-        /* 0x64000000 PCI mem 1.  */
-        /* 0x68000000 PCI mem 2.  */
+    // PERIPHERAL_BASE Offsets
+    enum {
+        SCU                 = 0X0000,
+        GIC                 = 0X0100,
+        GLOBAL_TIMER        = 0X0200,
+        PRIVATE_TIMERS      = 0x0600,
+        INT_DIST            = 0x1000,
     };
 
     // System Control Registers offsets to SCR_BASE
-    enum {                              // Description                                          Type    Value after reset
-        ID              = 0x000, // System Identity
-        SW              = 0x004,
-        LED             = 0x008,
-        OSC0            = 0x00C,
-        OSC1            = 0x010,
-        OSC2            = 0x014,
-        OSC3            = 0x018,
-        OSC4            = 0x01C,
-        LOCK            = 0x020,
-        HUNDRED_HZ      = 0x024,
-        CONFIGDATA      = 0x028,
-        FLAGS           = 0x030,
-        FLAGSSET        = 0x030,
-        FLAGSCLR        = 0x034,
-        NVFLAGS         = 0x038,
-        NVFLAGSSET      = 0x038,
-        NVFLAGSCCLR     = 0x03C,
-        PCICTL          = 0x044,
-        MCI             = 0x048,
-        FLASH           = 0x04C,
-        CLCD            = 0x050,
-        CLCDSER         = 0x054,
-        BOOTCS          = 0x058,
-        TWENTY_FOUR_MHZ = 0x05C,
-        MISC            = 0x060,
-        DMAPSR0         = 0x064,
-        DMAPSR1         = 0x068,
-        DMAPSR2         = 0x06C,
-        IOSEL           = 0x070,
-        PLDCTL          = 0x074,
-        BUSID           = 0x080,
-        PROCID          = 0x084,
-        OSCRESET        = 0x08C,
-        VOLTAGE         = 0x0A0,
-        TEST_OCS        = 0x0D4,
+    enum {
+        SRC_ID              = 0x000, // System Identity
+        SRC_SW              = 0x004,
+        SRC_LED             = 0x008,
+        SRC_OSC0            = 0x00C,
+        SRC_OSC1            = 0x010,
+        SRC_OSC2            = 0x014,
+        SRC_OSC3            = 0x018,
+        SRC_OSC4            = 0x01C,
+        SRC_LOCK            = 0x020,
+        SRC_HUNDRED_HZ      = 0x024,
+        SRC_CONFIGDATA      = 0x028,
+        SRC_FLAGS           = 0x030,
+        SRC_FLAGSSET        = 0x030,
+        SRC_FLAGSCLR        = 0x034,
+        SRC_NVFLAGS         = 0x038,
+        SRC_NVFLAGSSET      = 0x038,
+        SRC_NVFLAGSCCLR     = 0x03C,
+        SRC_PCICTL          = 0x044,
+        SRC_MCI             = 0x048,
+        SRC_FLASH           = 0x04C,
+        SRC_CLCD            = 0x050,
+        SRC_CLCDSER         = 0x054,
+        SRC_BOOTCS          = 0x058,
+        SRC_TWENTY_FOUR_MHZ = 0x05C,
+        SRC_MISC            = 0x060,
+        SRC_DMAPSR0         = 0x064,
+        SRC_DMAPSR1         = 0x068,
+        SRC_DMAPSR2         = 0x06C,
+        SRC_IOSEL           = 0x070,
+        SRC_PLDCTL          = 0x074,
+        SRC_BUSID           = 0x080,
+        SRC_PROCID          = 0x084,
+        SRC_OSCRESET        = 0x08C,
+        SRC_VOLTAGE         = 0x0A0,
+        SRC_TEST_OCS        = 0x0D4,
+    };
+    
+
+    // GIC CPU Offsets
+    enum {
+        GIC_CPU_CONTROL      = 0x000,
+        GIC_PRIORITY_CONTROL = 0x004,
+        GIC_BINARY_POINT     = 0x008,
+        GIC_INT_ACK          = 0x00C,
+        GIC_EOI              = 0x010,
+        GIC_RUNNING_INT      = 0x014,
+        GIC_HIGHEST_INT      = 0x018,
+    };
+
+    // GIC Distributtors Offsets
+    enum {
+        GIC_DIST_CONTROL_REGISTER = 0x000,
+        GIC_DIST_SETENABLE0       = 0x100,
+        GIC_DIST_SETENABLE1       = 0x104,
+        GIC_DIST_SETENABLE2       = 0x108,
+        GIC_DIST_CLEARENABLE0     = 0x180,
+        GIC_DIST_CLEARENABLE1     = 0x184,
+        GIC_DIST_CLEARENABLE2     = 0x188,
     };
 
 protected:
@@ -274,10 +259,8 @@ public:
     // static volatile Reg32 & scr(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(SCR_BASE)[o / sizeof(Reg32)]; }
     // static volatile Reg32 & scs(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(IC0_BASE)[o / sizeof(Reg32)]; }
 
-    static volatile Reg32 & systick(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(TIMER3_BASE)[o / sizeof(Reg32)]; }
-    static volatile Reg32 & tsc(unsigned int o)     { return reinterpret_cast<volatile Reg32 *>(TIMER1_BASE)[o / sizeof(Reg32)]; }
-    static volatile Reg32 & timer0(unsigned int o)  { return reinterpret_cast<volatile Reg32 *>(TIMER0_BASE)[o / sizeof(Reg32)]; }
-    static volatile Reg32 & timer1(unsigned int o)  { return reinterpret_cast<volatile Reg32 *>(TIMER2_BASE)[o / sizeof(Reg32)]; }
+    static volatile Reg32 & int_dist(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + INT_DIST)[o / sizeof(Reg32)]; }
+    static volatile Reg32 & gic(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + GIC)[o / sizeof(Reg32)]; }
 
 protected:
     static void pre_init();

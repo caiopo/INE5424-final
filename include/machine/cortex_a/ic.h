@@ -38,12 +38,12 @@ public:
         IRQ_GIC3                = 19,
         IRQ_GIC4                = 20,
         IRQ_GIC5                = 21,
-        IRQ_GIC5                = 22,
+        IRQ_GIC6                = 22,
         IRQ_GIC7                = 23,
         IRQ_GIC8                = 24,
         IRQ_GIC9                = 25,
         IRQ_GIC10               = 26,
-        IRQ_GIC11               = 27,
+        IRQ_GIC11_GLOBAL_TIMER  = 27,
         IRQ_GIC12               = 28,
         IRQ_GIC13               = 29,
         IRQ_GIC14               = 30,
@@ -82,13 +82,12 @@ public:
     static const unsigned int INTS = 96;
     static const unsigned int EXC_INT = 0;
     enum {
-        INT_HARD_FAULT  = ARMv7_M::EXC_HARD,
-        INT_TIMER       = ARMv7_M::EXC_SYSTICK,
-        INT_USER_TIMER0 = IRQ_TIMER0AND1,
-        INT_USER_TIMER1 = IRQ_TIMER0AND1,
-        INT_USER_TIMER2 = IRQ_TIMER2AND3,
-        INT_USER_TIMER3 = IRQ_TIMER2AND3,
-        INT_RESCHEDULER = IRQ_SOFTWARE0
+        INT_GLOBAL_TIMER = IRQ_GIC11_GLOBAL_TIMER,
+        INT_USER_TIMER0  = IRQ_TIMER0AND1,
+        INT_USER_TIMER1  = IRQ_TIMER0AND1,
+        INT_USER_TIMER2  = IRQ_TIMER2AND3,
+        INT_USER_TIMER3  = IRQ_TIMER2AND3,
+        INT_RESCHEDULER  = IRQ_SOFTWARE0,
     };
 
 public:
@@ -98,25 +97,38 @@ public:
     static int int2irq(int i) { return i; }
 
     static void enable() {
-
+        int_dist(GIC_DIST_SETENABLE0) = ~0;
+        int_dist(GIC_DIST_SETENABLE1) = ~0;
+        int_dist(GIC_DIST_SETENABLE2) = ~0;
     }
 
     static void enable(const Interrupt_Id & id) {
-
+        int_dist(GIC_DIST_SETENABLE0 + (id / 32) * 4) = 1 << (id % 32);
     }
 
     static void disable() {
-
+        int_dist(GIC_DIST_CLEARENABLE0) = ~0;
+        int_dist(GIC_DIST_CLEARENABLE1) = ~0;
+        int_dist(GIC_DIST_CLEARENABLE2) = ~0;
     }
 
     static void disable(const Interrupt_Id & id) {
-
+        int_dist(GIC_DIST_CLEARENABLE0 + (id / 32) * 4) = 1 << (id % 32);
     }
 
     // Only works in handler mode (inside IC::entry())
     static Interrupt_Id int_id() { return CPU::flags() & 0x3f; }
 
-    static void init(void) {};
+    static void init() {
+        // Set interrup priority mask
+        gic(GIC_PRIORITY_CONTROL) = 0xFF;
+        
+        // Enable CPU interface control register to signal interrupts
+        gic(GIC_CPU_CONTROL) = 1;
+    
+        // Enable distributor control register to send interrupts to CPUs
+        int_dist(GIC_DIST_CONTROL_REGISTER) = 1;
+    };
 };
 
 class IC: private GIC
@@ -129,20 +141,11 @@ private:
 public:
     using IC_Common::Interrupt_Id;
     using IC_Common::Interrupt_Handler;
-    using Engine::INT_TIMER;
+    using Engine::INT_GLOBAL_TIMER;
     using Engine::INT_USER_TIMER0;
     using Engine::INT_USER_TIMER1;
     using Engine::INT_USER_TIMER2;
     using Engine::INT_USER_TIMER3;
-    using Engine::INT_GPIOA;
-    using Engine::INT_GPIOB;
-    using Engine::INT_GPIOC;
-    using Engine::INT_GPIOD;
-    using Engine::INT_USB0;
-    using Engine::INT_NIC0_RX;
-    using Engine::INT_NIC0_TX;
-    using Engine::INT_NIC0_ERR;
-    using Engine::INT_NIC0_TIMER;
     using Engine::INT_RESCHEDULER;
 
 public:

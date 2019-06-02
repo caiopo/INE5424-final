@@ -18,6 +18,7 @@ __BEGIN_SYS
 // Class attributes
 IC::Interrupt_Handler IC::_int_vector[IC::INTS];
 
+// Class methods
 void IC::dispatch(unsigned int id)
 {
     if((id != INT_TIMER) || Traits<IC>::hysterically_debugged)
@@ -36,8 +37,6 @@ void IC::eoi(unsigned int id)
         _eoi_vector[id](id);
 }
 
-
-// Class methods
 void IC::entry()
 {
     ASM(".equ MODE_IRQ, 0x12                        \n"
