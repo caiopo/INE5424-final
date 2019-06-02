@@ -12,8 +12,80 @@
 
 __BEGIN_SYS
 
+// Cortex-A Private Timer
+class System_Timer_Engine: public Machine_Model
+{
+public:
+    typedef CPU::Reg32 Count;
+    static const unsigned int CLOCK = Traits<CPU>::CLOCK / 2;
+
+protected:
+    System_Timer_Engine() {}
+
+public:
+    static TSC::Hertz clock() { return CLOCK; }
+
+    static void enable() { priv_timer(PTCLR) |= PT_TIMER_ENABLE; }
+    static void disable() { priv_timer(PTCLR) &= ~PT_TIMER_ENABLE; }
+
+    static void eoi(const IC::Interrupt_Id & int_id) { priv_timer(PTISR) = PT_INT_CLR; }
+
+    void power(const Power_Mode & mode);
+
+    static void init(unsigned int f) {
+        priv_timer(PTCLR) = 0;
+        priv_timer(PTISR) = PT_INT_CLR;
+        priv_timer(PTLR) = CLOCK / f;
+        priv_timer(PTCLR) = PT_IRQ_EN | PT_AUTO_RELOAD;
+    }
+};
+
+// Cortex-A Global Timer
+class User_Timer_Engine: public Machine_Model
+{
+protected:
+    typedef CPU::Reg64 Count;
+    typedef TSC::Hertz Hertz;
+
+public:
+    static const Hertz CLOCK = Traits<CPU>::CLOCK / 2;
+
+public:
+    User_Timer_Engine(unsigned int channel, const Count & count, bool interrupt = true, bool periodic = true);
+
+    static Hertz clock() { return CLOCK; }
+
+    Count read() {
+        Reg32 high, low;
+
+        do {
+            high = global_timer(GTCTRH);
+            low = global_timer(GTCTRL);
+        } while(global_timer(GTCTRH) != high);
+
+        return static_cast<Count>(high) << 32 | low;
+    }
+
+    static void enable();
+    static void disable();
+
+    void set(const Count & count) {
+        // Disable counting before programming
+        global_timer(GTCLR) = 0;
+
+        global_timer(GTCTRL) = count & 0xffffffff;
+        global_timer(GTCTRH) = count >> 32;
+
+        // Re-enable counting
+        global_timer(GTCLR) = 1;
+    }
+
+protected:
+    static void eoi(const IC::Interrupt_Id & int_id) {}
+};
+
 // Tick timer used by the system
-class Timer: private Timer_Common, private Engine
+class Timer: private Timer_Common, private System_Timer_Engine
 {
     friend class Machine;
     friend class Init_System;
@@ -22,6 +94,7 @@ protected:
     static const unsigned int CHANNELS = 2;
     static const unsigned int FREQUENCY = Traits<Timer>::FREQUENCY;
 
+    typedef System_Timer_Engine Engine;
     typedef Engine::Count Count;
     typedef IC::Interrupt_Id Interrupt_Id;
 

@@ -31,7 +31,7 @@ public:
         // https://wiki.osdev.org/User:Pancakes/arm_qemu_realview-pb-a
         // http://infocenter.arm.com/help/topic/com.arm.doc.dui0440b/DUI0440B_realview_platform_baseboard_for_cortexa9_ug.pdf
         // http://infocenter.arm.com/help/topic/com.arm.doc.ddi0407g/DDI0407G_cortex_a9_mpcore_r3p0_trm.pdf
-        
+
         SCR_BASE                = 0x10000000,
         SYSTEM_CONTROLLER_BASE  = 0x10001000,
 
@@ -108,7 +108,6 @@ public:
         SRC_VOLTAGE         = 0x0A0,
         SRC_TEST_OCS        = 0x0D4,
     };
-    
 
     // GIC CPU Offsets
     enum {
@@ -130,6 +129,40 @@ public:
         GIC_DIST_CLEARENABLE0     = 0x180,
         GIC_DIST_CLEARENABLE1     = 0x184,
         GIC_DIST_CLEARENABLE2     = 0x188,
+    };
+
+    // Global Timer Registers offsets
+    enum {                                      // Description
+        GTCTRL                      = 0x00,     // Low Counter
+        GTCTRH                      = 0x04,     // High Counter
+        GTCLR                       = 0x08,     // Control
+        GTISR                       = 0x0C      // Interrupt Status
+    };
+
+    // Useful bits in GTCLR
+    enum {                                         // Description                  Type    Value after reset
+        GT_TIMER_ENABLE                = 1 << 0,   // Enable                       r/w     0
+        GT_IRQ_EN                      = 1 << 2    // Enable interrupt             r/w     0
+    };
+
+    // Private Timer Registers offsets
+    enum {                                      // Description
+        PTLR                        = 0x00,     // Load
+        PTCTR                       = 0x04,     // Counter
+        PTCLR                       = 0x08,     // Control
+        PTISR                       = 0x0C      // Interrupt Status
+    };
+
+    // Useful bits in PTCLR
+    enum {                                         // Description                  Type    Value after reset
+        PT_TIMER_ENABLE                = 1 << 0,   // Enable                       r/w     0
+        PT_AUTO_RELOAD                 = 1 << 1,   // Auto reload                  r/w     0
+        PT_IRQ_EN                      = 1 << 2    // Enable interrupt             r/w     0
+    };
+
+    // Useful bits in PTISR
+    enum {                                          // Description                  Type    Value after reset
+        PT_INT_CLR                     = 1 << 0     // Interrupt clear bit          r/w     0
     };
 
 protected:
@@ -154,6 +187,12 @@ protected:
 
     static const UUID & uuid() { return System::info()->bm.uuid; } // TODO: System_Info is not populated in this machine
 
+    static unsigned int cpu_id() {
+        int id;
+        ASM("mrc p15, 0, %0, c0, c0, 5" : "=r"(id) : : );
+        return id & 0x3;
+    }
+
     // Device enabling
     static void enable_uart(unsigned int unit) {
         // assert(unit < UARTS);
@@ -161,7 +200,6 @@ protected:
         // gpioa(AFSEL) |= 3 << (unit * 2);                // Pins A[1:0] are multiplexed between GPIO and UART 0. Select UART.
         // gpioa(DEN) |= 3 << (unit * 2);                  // Enable digital I/O on Pins A[1:0]
     }
-    static void enable_usb(unsigned int unit) {}
 
     // Power Management
     static void power_uart(unsigned int unit, const Power_Mode & mode) {
@@ -210,57 +248,12 @@ protected:
         // }
     }
 
-    static void power_usb(unsigned int unit, const Power_Mode & mode) {}
-
-
-    // GPIO
-    static void gpio_init() {}
-    static void power_gpio(unsigned int unit, const Power_Mode & mode) {
-        // assert(unit < UARTS);
-        // switch(mode) {
-        // case ENROLL:
-        // 	break;
-        // case DISMISS:
-        // 	break;
-        // case SAME:
-        // 	break;
-        // case FULL:
-        // 	break;
-        // case LIGHT:
-        // 	break;
-        // case SLEEP:
-        //     scr(RCGC2) |= 1 << unit;                   // Activate port "unit" clock
-        //     break;
-        // case OFF:
-        //     scr(RCGC2) &= ~(1 << unit);                // Deactivate port "unit" clock
-        //     break;
-        // }
-    }
-    void gpio_pull_up(unsigned int port, unsigned int pin) { 
-        // gpio(port, PUR) &= 1 << pin;
-    }
-    void gpio_pull_down(unsigned int port, unsigned int pin) {
-        // gpio(port, PDR) &= 1 << pin;
-    }
-    void gpio_floating(unsigned int port, unsigned int pin) {
-        // gpio(port, ODR) &= 1 << pin;
-    }
-
-    // ADC (not implemented for this model)
-    static void adc_config(unsigned char channel);
-
-    // PWM (not implemented for this model)
-    static void pwm_config(unsigned int timer, char gpio_port, unsigned int gpio_pin);
-
-    // IEEE 802.15.4 (not present in this model)
-    static void power_ieee802_15_4(const Power_Mode & mode);
 
 public:
-    // static volatile Reg32 & scr(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(SCR_BASE)[o / sizeof(Reg32)]; }
-    // static volatile Reg32 & scs(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(IC0_BASE)[o / sizeof(Reg32)]; }
-
     static volatile Reg32 & int_dist(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + INT_DIST)[o / sizeof(Reg32)]; }
     static volatile Reg32 & gic(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + GIC)[o / sizeof(Reg32)]; }
+    static volatile Reg32 & global_timer(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + GLOBAL_TIMER)[o / sizeof(Reg32)]; }
+    static volatile Reg32 & priv_timer(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + TIMER0_BASE)[o / sizeof(Reg32)]; }
 
 protected:
     static void pre_init();

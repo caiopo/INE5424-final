@@ -82,7 +82,7 @@ public:
     static const unsigned int INTS = 96;
     static const unsigned int EXC_INT = 0;
     enum {
-        INT_GLOBAL_TIMER = IRQ_GIC11_GLOBAL_TIMER,
+        INT_TIMER = IRQ_GIC11_GLOBAL_TIMER,
         INT_USER_TIMER0  = IRQ_TIMER0AND1,
         INT_USER_TIMER1  = IRQ_TIMER0AND1,
         INT_USER_TIMER2  = IRQ_TIMER2AND3,
@@ -141,7 +141,7 @@ private:
 public:
     using IC_Common::Interrupt_Id;
     using IC_Common::Interrupt_Handler;
-    using Engine::INT_GLOBAL_TIMER;
+    using Engine::INT_TIMER;
     using Engine::INT_USER_TIMER0;
     using Engine::INT_USER_TIMER1;
     using Engine::INT_USER_TIMER2;

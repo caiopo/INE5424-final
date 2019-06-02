@@ -5,6 +5,8 @@
 
 __BEGIN_SYS
 
+void Timer::init() {
 
+}
 
 __END_SYS
