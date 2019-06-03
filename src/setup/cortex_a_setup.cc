@@ -3,9 +3,6 @@
 #include <system/config.h>
 
 extern "C" { void _vector_table() __attribute__ ((used, naked, section(".init"))); }
-// extern "C" { void _startup_mmu() __attribute__ ((used, ?, section(".init"))); }
-// extern "C" { void _startup_cache() __attribute__ ((used, ?, section(".init"))); }
-
 
 // Interrupt Vector Table
 void _vector_table()
