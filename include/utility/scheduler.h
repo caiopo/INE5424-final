@@ -37,6 +37,13 @@ namespace Scheduling_Criteria
 
         operator const volatile int() const volatile { return _priority; }
 
+        Priority operator +=(Priority rhs) {
+            if(_priority < (IDLE - rhs)) {
+                _priority += rhs;
+            }
+            return *this;
+        }
+
     protected:
         volatile int _priority;
     };
@@ -57,6 +64,24 @@ namespace Scheduling_Criteria
 
     public:
         RR(int p = NORMAL): Priority(p) {}
+    };
+
+    // Feedback Scheduling
+    class FS: public Priority
+    {
+    public:
+        enum {
+            MAIN   = 0,
+            NORMAL = 1,
+            IDLE   = (unsigned(1) << (sizeof(int) * 8 - 1)) - 1
+        };
+
+        static const bool timed = true;
+        static const bool dynamic = true;
+        static const bool preemptive = true;
+
+    public:
+        FS(int p = NORMAL): Priority(p) {}
     };
 
     // First-Come, First-Served (FIFO)

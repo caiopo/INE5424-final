@@ -17,20 +17,43 @@ template<> struct Traits<Machine>: public Traits<Machine_Common>
 {
     static const unsigned int CPUS = Traits<Build>::CPUS;
     
+    // // Physical Memory
+    // static const unsigned int MEM_BASE    = 0x00000000;
+    // static const unsigned int MEM_TOP     = 0xffffffff;
+    // static const unsigned int BOOT_STACK  = 0xfffffffc;
+
+    // // Logical Memory Map
+    // static const unsigned int APP_LOW     = 0x00000000;
+    // static const unsigned int APP_CODE    = 0x00000000;
+    // static const unsigned int APP_DATA    = 0x01000000;
+    // static const unsigned int APP_HIGH    = 0x10000000;
+
+    // static const unsigned int PHY_MEM     = 0x00000000;
+    // static const unsigned int IO_BASE     = 0x00000000;
+    // static const unsigned int IO_TOP      = 0x0000ffff;
+    // static const unsigned int SYS         = 0x00200000;
+    // static const unsigned int SYS_CODE    = 0x00200000;
+    // static const unsigned int SYS_DATA    = 0x20000000;
+
+    // // Default Sizes and Quantities
+    // static const unsigned int STACK_SIZE  = 512;
+    // static const unsigned int HEAP_SIZE   = 512;
+    // static const unsigned int MAX_THREADS = 5;
+
     // Physical Memory
-    static const unsigned int MEM_BASE    = 0x48000000;
-    static const unsigned int MEM_TOP     = 0x481ffffe; // 2 MB (1FFFFE)
-    static const unsigned int BOOT_STACK  = 0x481ffffb; // MEM_TOP - sizeof(int) (?????????)
+    static const unsigned int MEM_BASE    = 0x00010000;
+    static const unsigned int MEM_TOP     = 0x20001fff; // 8 KB (MAX for 32-bit is 0x70000000 / 1792 MB)
+    static const unsigned int BOOT_STACK  = 0x20001ffc; // MEM_TOP - sizeof(int)
 
     // Logical Memory Map
-    static const unsigned int APP_LOW     = 0x48000000; // (????)
+    static const unsigned int APP_LOW     = 0x20000000;
     static const unsigned int APP_CODE    = 0x00000000;
-    static const unsigned int APP_DATA    = 0x48000000; // (?????)
-    static const unsigned int APP_HIGH    = 0x481ffffe; // 2 MB (????)
+    static const unsigned int APP_DATA    = 0x20000000;
+    static const unsigned int APP_HIGH    = 0x20001fff; // 8 KB
 
-    static const unsigned int PHY_MEM     = 0x48000000;
-    static const unsigned int IO_BASE     = 0x1f000000;
-    static const unsigned int IO_TOP      = 0x440067ff; // ??????
+    static const unsigned int PHY_MEM     = 0x20000000;
+    static const unsigned int IO_BASE     = 0x40000000;
+    static const unsigned int IO_TOP      = 0x440067ff;
 
     static const unsigned int SYS         = 0x00200000;
     static const unsigned int SYS_CODE    = 0x00200000; // Library mode only => APP + SYS
@@ -40,30 +63,6 @@ template<> struct Traits<Machine>: public Traits<Machine_Common>
     static const unsigned int STACK_SIZE  = 512;
     static const unsigned int HEAP_SIZE   = 512;
     static const unsigned int MAX_THREADS = 5;
-
-    // // Physical Memory
-    // static const unsigned int MEM_BASE    = 0x00000000;
-    // static const unsigned int MEM_TOP     = 0x20001fff; // 8 KB (MAX for 32-bit is 0x70000000 / 1792 MB)
-    // static const unsigned int BOOT_STACK  = 0x20001ffc; // MEM_TOP - sizeof(int)
-
-    // // Logical Memory Map
-    // static const unsigned int APP_LOW     = 0x20000000;
-    // static const unsigned int APP_CODE    = 0x00000000;
-    // static const unsigned int APP_DATA    = 0x20000000;
-    // static const unsigned int APP_HIGH    = 0x20001fff; // 8 KB
-
-    // static const unsigned int PHY_MEM     = 0x20000000;
-    // static const unsigned int IO_BASE     = 0x40000000;
-    // static const unsigned int IO_TOP      = 0x440067ff;
-
-    // static const unsigned int SYS         = 0x00200000;
-    // static const unsigned int SYS_CODE    = 0x00200000; // Library mode only => APP + SYS
-    // static const unsigned int SYS_DATA    = 0x20000000; // Library mode only => APP + SYS
-
-    // // Default Sizes and Quantities
-    // static const unsigned int STACK_SIZE  = 512;
-    // static const unsigned int HEAP_SIZE   = 512;
-    // static const unsigned int MAX_THREADS = 5;
 };
 
 template<> struct Traits<IC>: public Traits<Machine_Common>

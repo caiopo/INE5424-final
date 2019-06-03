@@ -27,7 +27,8 @@ public:
     static void poweroff();
 
     static unsigned int n_cpus();
-    static unsigned int cpu_id();
+
+    static unsigned int cpu_id() { return Machine_Model::cpu_id(); }
 
     static void smp_barrier();
     static void smp_init(unsigned int);

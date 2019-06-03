@@ -312,7 +312,9 @@ void Thread::reschedule()
 void Thread::time_slicer(const IC::Interrupt_Id & i)
 {
     lock();
-
+    if(EQUAL<Criterion, Scheduling_Criteria::FS>::Result) {
+        running()->_link.demote();
+    }
     reschedule();
 }
 

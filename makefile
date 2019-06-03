@@ -2,8 +2,6 @@
 
 include makedefs
 
-export QEMU_AUDIO_DRV=none
-
 SUBDIRS	:= etc tools src app img
 
 all: FORCE
