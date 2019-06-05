@@ -10,7 +10,8 @@ __BEGIN_SYS
 
 void RealView_PBX::pre_init() {}
 
-void RealView_PBX::init() {}
+void RealView_PBX::init() {
+}
 
 __END_SYS
 
