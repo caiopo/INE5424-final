@@ -88,14 +88,17 @@ template<> struct Traits<Observers>: public Traits<void>
 // System Parts (mostly to fine control debugging)
 template<> struct Traits<Boot>: public Traits<void>
 {
+    static const bool debugged = hysterically_debugged;
 };
 
 template<> struct Traits<Setup>: public Traits<void>
 {
+    static const bool debugged = hysterically_debugged;
 };
 
 template<> struct Traits<Init>: public Traits<void>
 {
+    static const bool debugged = hysterically_debugged;
 };
 
 // Mediators

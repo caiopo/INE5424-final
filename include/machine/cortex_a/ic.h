@@ -117,7 +117,12 @@ public:
     }
 
     // Only works in handler mode (inside IC::entry())
-    static Interrupt_Id int_id() { return CPU::flags() & 0x3f; }
+    static Interrupt_Id int_id() { 
+        Reg32 int_ack = gic(GIC_INT_ACK) & 0X3ff; // 10 bits mask
+
+        gic(GIC_EOI) = int_ack;
+        return int_ack;
+    }
 
     static void init() {
         // Set interrup priority mask
