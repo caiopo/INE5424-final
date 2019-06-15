@@ -179,6 +179,6 @@ void _vector_table()
         MCR p15, 0, r1, c1, c0, 0	    // Escreve-se no reg 1 do coprocessor 15              \t\n\
                                         // o que há em R1, habilitando a MMU                  \t\n\
                                                                                               \t\n\
-        b _start                                                                              \t\n\
+        b _mcu_start                                                                              \t\n\
         ");
 }
