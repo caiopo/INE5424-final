@@ -32,8 +32,8 @@ public:
     static unsigned int n_cpus() { return smp ? _n_cpus : 1; }
     static unsigned int cpu_id() { return smp ? Machine_Model::cpu_id() : 0; }
 
-    static void smp_barrier(unsigned long n_cpus = _n_cpus);
     static void smp_init(unsigned int n_cpus) { _n_cpus = n_cpus; }
+    static void smp_barrier(unsigned long n_cpus = _n_cpus);
 
     static const UUID & uuid() { return Machine_Model::uuid(); }
 

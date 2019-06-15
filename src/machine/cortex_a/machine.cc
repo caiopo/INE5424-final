@@ -5,6 +5,9 @@
 
 __BEGIN_SYS
 
+// Class attributes
+volatile unsigned int Machine::_n_cpus;
+
 void Machine::panic()
 {
     CPU::int_disable();
