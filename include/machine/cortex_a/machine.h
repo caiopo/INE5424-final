@@ -17,6 +17,9 @@ class Machine: private Machine_Common, private Machine_Model
     friend class Init_System;
     friend class First_Object;
 
+private:
+    static const bool smp = Traits<System>::multicore;
+
 public:
     Machine() {}
 
@@ -26,18 +29,21 @@ public:
     static void reboot();
     static void poweroff();
 
-    static unsigned int n_cpus();
+    static unsigned int n_cpus() { return smp ? _n_cpus : 1; }
+    static unsigned int cpu_id() { return smp ? Machine_Model::cpu_id() : 0; }
 
-    static unsigned int cpu_id() { return Machine_Model::cpu_id(); }
-
-    static void smp_barrier();
-    static void smp_init(unsigned int);
+    static void smp_barrier(unsigned long n_cpus = _n_cpus);
+    static void smp_init(unsigned int n_cpus) { _n_cpus = n_cpus; }
 
     static const UUID & uuid() { return Machine_Model::uuid(); }
 
 private:
     static void pre_init(System_Info * si);
     static void init();
+
+private:
+    static volatile unsigned int _n_cpus;
+
 };
 
 __END_SYS

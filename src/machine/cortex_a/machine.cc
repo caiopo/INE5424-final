@@ -22,4 +22,23 @@ void Machine::reboot()
     Machine_Model::reboot();
 }
 
+void Machine::smp_barrier(unsigned long n_cpus)
+{
+    static volatile unsigned long ready[2];
+    static volatile unsigned long i;
+
+    if(smp) {
+        int j = i;
+
+        CPU::finc(ready[j]);
+        if(cpu_id() == 0) {
+            while(ready[j] < n_cpus); // wait for all CPUs to be ready
+            i = !i;                   // toggle ready
+            ready[j] = 0;             // signalizes waiting CPUs
+        } else {
+            while(ready[j]);          // wait for CPU[0] signal
+        }
+    }
+}
+
 __END_SYS
