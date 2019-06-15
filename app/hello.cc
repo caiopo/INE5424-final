@@ -6,7 +6,7 @@ using namespace EPOS;
 OStream cout;
 
 int main() {
-    while(true) {
+    while (true) {
         Alarm::delay(10000000);
         cout << "teste" << endl;
     }
