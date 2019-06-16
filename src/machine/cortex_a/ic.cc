@@ -70,7 +70,7 @@ void IC::entry()
         "str r0, [r2]                               \n"
         // Save IRQ-spsr
         "stmfd sp!, {r1}                            \n"
-        //"bl %0                                      \n"
+        //"bl %0                                    \n"
         "bl _dispatch                               \n"
         "ldmfd sp!, {r0}                            \n"
         // Restore IRQ's spsr value to SVC's spsr

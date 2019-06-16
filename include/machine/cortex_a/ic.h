@@ -191,7 +191,9 @@ public:
 
     using Engine::irq2int;
 
-    static void ipi_send(unsigned int cpu, Interrupt_Id int_id) {}
+    static void ipi_send(unsigned int cpu, Interrupt_Id int_id) {
+        int_dist(GIC_DIST_SGI) = (0 << 24 | (cpu << 16) | int_id);
+    }
 
     void undefined_instruction();
     void software_interrupt();

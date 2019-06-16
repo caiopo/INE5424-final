@@ -70,6 +70,13 @@ public:
         INT_DIST            = 0x1000,
     };
 
+    // SCU Offsets
+    enum {
+        SCU_ENABLE                 = 0x00,
+        SCU_CONFIG                 = 0X04,
+        SCU_SECURE_INVALIDATE      = 0X0C,
+    };
+
     // System Control Registers offsets to SCR_BASE
     enum {
         SRC_ID              = 0x000, // System Identity
@@ -129,6 +136,7 @@ public:
         GIC_DIST_CLEARENABLE0     = 0x180,
         GIC_DIST_CLEARENABLE1     = 0x184,
         GIC_DIST_CLEARENABLE2     = 0x188,
+        GIC_DIST_SGI              = 0xF00,
     };
 
     // Global Timer Registers offsets
@@ -254,7 +262,9 @@ public:
     static volatile Reg32 & gic(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + GIC)[o / sizeof(Reg32)]; }
     static volatile Reg32 & global_timer(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + GLOBAL_TIMER)[o / sizeof(Reg32)]; }
     static volatile Reg32 & priv_timer(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + PRIVATE_TIMERS)[o / sizeof(Reg32)]; }
-
+    static volatile Reg32 & scu(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(PERIPHERAL_BASE + SCU)[o / sizeof(Reg32)]; }
+    static volatile Reg32 & scr(unsigned int o) { return reinterpret_cast<volatile Reg32 *>(SCR_BASE)[o / sizeof(Reg32)]; }
+   
 protected:
     static void pre_init();
     static void init();

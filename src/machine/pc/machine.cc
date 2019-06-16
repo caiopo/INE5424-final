@@ -45,6 +45,7 @@ void Machine::smp_barrier(unsigned long n_cpus)
 
         CPU::finc(ready[j]);
         if(cpu_id() == 0) {
+            kout << ready[0] << " " << ready[1] << " " << i << endl;
             while(ready[j] < n_cpus); // wait for all CPUs to be ready
             i = !i;                   // toggle ready
             ready[j] = 0;             // signalizes waiting CPUs

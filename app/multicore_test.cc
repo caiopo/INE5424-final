@@ -18,7 +18,6 @@ int print_cpu_id(int thread_id) {
     return 0;
 }
 
-
 int main() {
     for (int i = 0; i < NUM_THREADS; i++) {
         threads[i] = new Thread(&print_cpu_id, i);
