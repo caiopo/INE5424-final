@@ -12,7 +12,7 @@ Thread * threads[NUM_THREADS];
 int print_cpu_id(int thread_id) {
     for (int i = 0; i < 10; i++) {
         cout << "Thread " << thread_id << " / Core " << Machine::cpu_id() << " / Iteration " << i << endl;
-        Alarm::delay(100000 * thread_id); // 1s
+        Alarm::delay(100000 * thread_id);
     }
 
     return 0;
@@ -27,4 +27,6 @@ int main() {
         threads[i]->join();
         delete threads[i];
     }
+
+    return 0;
 }

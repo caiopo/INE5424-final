@@ -1,13 +1,10 @@
-Feedback Scheduling
-===================
+EPOS SMP @ ARM Cortex-A9
+========================
 
-O programa de teste (feedback_scheduling.cc) demonstra o funcionamento
-do algoritmo de escalonamento criando duas threads.
+EPOS Symmetric Multiprocessing @ ARM Cortex-A9 (Realview PBX A9)
 
-A primeira é IO bound, sempre deixando a CPU antes do time_slicer
-executar reschedule, e a segunda é CPU bound, sempre utilizando seu
-quantum por completo.
+Os programas concurrent_philosophers_dinner e parallel_philosophers_dinner
+foram usados para validar a implementação.
 
-O programa demonstra que a thread IO bound nunca perde prioridade,
-enquanto a thread CPU bound perde prioridade em todas as invocações
-do time_slicer.
+Também foi adicionado o programa multicore_test que serve para o mesmo
+propósito.

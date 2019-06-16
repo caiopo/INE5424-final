@@ -8,7 +8,7 @@ __BEGIN_SYS
 
 void clear_bss();
 void join_smp();
-
+void enable_maintenance_broadcast();
 
 void RealView_PBX::pre_init() {
     ASM("mcr p15, 0, %0, c12, c0, 0" : : "p"(Traits<Machine>::VECTOR_TABLE));
@@ -177,15 +177,19 @@ void RealView_PBX::pre_init() {
 
     if (Machine::cpu_id() == 0) {
         clear_bss();
-        scu(SCU_ENABLE) |= 0x1;  // ativa scu
+        scu(SCU_ENABLE) |= 0x1;  // Enable SCU
     }
     
-    scu(SCU_SECURE_INVALIDATE) = 0;
+    scu(SCU_SECURE_INVALIDATE) |= 0x0000FFFF; // Secure SCU invalidate
     join_smp();
-    scu(SCU_CONFIG) |= 0xF << 4;
+    enable_maintenance_broadcast();
+    scu(SCU_CONFIG) |= 0xF << 4; // Enable SCU cache coherence
 
     if (Machine::cpu_id() == 0) {
+        // Set secondary CPUs initial address
         scr(SRC_FLAGSSET) = Traits<Machine>::VECTOR_TABLE;
+
+        // Wake up other CPUs
         IC::ipi_send(0xF, 0);
     }
 }
@@ -215,7 +219,14 @@ void join_smp() {
     ");
 }
 
-  
+void enable_maintenance_broadcast() {
+    ASM("\t\n\
+        MRC     p15, 0, r0, c1, c0, 1   // Read Aux Ctrl register     \t\n\
+        ORR     r0, r0, #0x01           // Set the FW bit (bit 0)     \t\n\
+        MCR     p15, 0, r0, c1, c0, 1   // Write Aux Ctrl register    \t\n\
+    ");
+}
+
 __END_SYS
 
 #endif
