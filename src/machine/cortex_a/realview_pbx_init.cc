@@ -190,7 +190,9 @@ void RealView_PBX::pre_init() {
         scr(SRC_FLAGSSET) = Traits<Machine>::VECTOR_TABLE;
 
         // Wake up other CPUs
-        IC::ipi_send(0xF, 0);
+        for(unsigned int i = 1; i < Traits<Machine>::CPUS; i++) {
+            IC::ipi_send(i, 0);
+        }
     }
 }
 
