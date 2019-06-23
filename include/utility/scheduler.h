@@ -117,6 +117,34 @@ namespace Scheduling_Criteria
         volatile unsigned int _queue;
         static volatile unsigned int _next_queue;
     };
+
+    // Global Feedbacak Scheduling
+    class GFS: public FS
+    {
+    public:
+        static const unsigned int HEADS = Traits<Machine>::CPUS;
+
+    public:
+        GFS(int p = NORMAL): FS(p) {}
+
+        static unsigned int current_head() { return Machine::cpu_id(); }  
+    };
+
+    // Partitioned Feedback Scheduling
+    class PFS: public FS, public Variable_Queue
+    {
+    public:
+        static const unsigned int QUEUES = Traits<Machine>::CPUS;
+
+    public:
+        template <typename ... Tn>
+        PFS(int p = NORMAL, int cpu = ANY, Tn & ... an)
+        : FS(p), Variable_Queue(((_priority == IDLE) || (_priority == MAIN)) ? Machine::cpu_id() : (cpu != ANY) ? cpu : ++_next_queue %= Machine::n_cpus()) {}
+
+        using Variable_Queue::queue;
+
+        static unsigned int current_queue() { return Machine::cpu_id(); }
+    };
     
     // CPU Affinity
     class CPU_Affinity: public Priority, public Variable_Queue
@@ -143,6 +171,14 @@ namespace Scheduling_Criteria
 // Scheduling_Queue
 template<typename T, typename R = typename T::Criterion>
 class Scheduling_Queue: public Scheduling_List<T> {};
+
+template<typename T>
+class Scheduling_Queue<T, Scheduling_Criteria::GFS>:
+public Multihead_Scheduling_List<T> {};
+
+template<typename T>
+class Scheduling_Queue<T, Scheduling_Criteria::PFS>:
+public Scheduling_Multilist<T> {};
 
 template<typename T>
 class Scheduling_Queue<T, Scheduling_Criteria::CPU_Affinity>:

@@ -15,7 +15,7 @@ int io_thread() {
     return 0;
 }
 
-int cpu_tread() {
+int cpu_thread() {
     int result = 0;
     for(int i = 0; i < 100000000; i++) {
         result = i;
@@ -26,7 +26,7 @@ int cpu_tread() {
 
 int main() {
     io = new Thread(&io_thread);
-    cpu = new Thread(&cpu_tread);
+    cpu = new Thread(&cpu_thread);
     cout << "IO Thread Priority: " << io->priority() << endl;
     cout << "CPU Thread Priority: " << cpu->priority() << endl;
     io->join();
